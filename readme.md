@@ -42,3 +42,11 @@ socket.emit('dispatch', {type: 'MY_ACTION', payload: { foo: 'bar' }}, () => {
   console.log('Client dispatched the action!')
 })
 ```
+
+# Roadmap
+
+### `actionChannel` that emit socket events, with automatic retry on failures
+
+### worker that can load balance `actionChannel` tasks, allowing socket emits to work in parallel
+
+### effects for easy usage of [socket channel subscriptions](http://socketcluster.io/#!/docs/api-scchannel-client)
