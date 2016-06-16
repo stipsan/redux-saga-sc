@@ -37,6 +37,9 @@
     "url": "https://github.com/stipsan/redux-saga-sc/issues"
   },
   "homepage": "https://github.com/stipsan/redux-saga-sc#readme",
+  "peerDependencies": {
+    "redux-saga": "3.x"
+  },
   "devDependencies": {
     "babel-cli": "6.10.1",
     "babel-eslint": "6.0.4",

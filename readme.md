@@ -7,4 +7,4 @@ Or to sync a shared redux state across multiple nodes or clients.
 
 # Documentation
 
-@TODO
+### Using the `createEventChannel` factory to connect to socket events
