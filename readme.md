@@ -8,3 +8,29 @@ Or to sync a shared redux state across multiple nodes or clients.
 # Documentation
 
 ### Using the `createEventChannel` factory to connect to socket events
+
+On the client:
+```js
+import { createEventChannel } from 'redux-saga-sc'
+import socketCluster from 'socketcluster-client'
+
+const socket = socketCluster.connect({
+  hostname: process.env.SOCKET_HOSTNAME || location.hostname
+})
+
+export function *watchIncomingActions() {
+  const chan = yield call(createEventChannel, socket, 'dispatch')
+  while (true) {
+    const action = yield take(chan)
+    yield put(action)
+  }
+}
+```
+
+On the server:
+
+```js
+socket.emit('dispatch', {type: 'MY_ACTION', payload: { foo: 'bar' }}, () => {
+  console.log('Client dispatched the action!')
+})
+```
