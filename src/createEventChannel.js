@@ -4,7 +4,9 @@ export function createEventChannel(socket, event = 'dispatch') {
   return eventChannel(listener => {
     const handleEvent = (action, cb) => {
       // notify the client that the request is received
-      'function' === typeof cb && cb()
+      if (typeof cb === 'function') {
+        cb()
+      }
       listener(action)
     }
     socket.on(event, handleEvent)
