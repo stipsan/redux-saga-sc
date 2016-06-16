@@ -1,0 +1,31 @@
+{
+  "name": "redux-saga-sc",
+  "version": "1.0.0",
+  "description": "Provides sagas to easily dispatch redux actions over SocketCluster websockets",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel-register --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stipsan/redux-saga-sc.git"
+  },
+  "keywords": [
+    "redux",
+    "redux-saga",
+    "socketcluster",
+    "sc",
+    "realtime",
+    "websocket",
+    "cluster",
+    "scalable",
+    "saga",
+    "effects"
+  ],
+  "author": "Stian Didriksen <stipsan@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stipsan/redux-saga-sc/issues"
+  },
+  "homepage": "https://github.com/stipsan/redux-saga-sc#readme"
+}
