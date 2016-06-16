@@ -1,7 +1,5 @@
 sudo: false
 language: node_js
-node_js:
-- "4"
 script: "npm test && npm run lint"
 after_script: npm run coverage
 notifications:
