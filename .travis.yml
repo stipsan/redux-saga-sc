@@ -9,3 +9,6 @@ notifications:
 env:
   global:
     - NPM_CONFIG_PROGRESS="false"
+addons:
+  code_climate:
+    repo_token: 6aa7c8b81fa52eb0e00466d7342fded59ce4ed8cdce3fc240103050c72b159de
