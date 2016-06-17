@@ -4,8 +4,17 @@ import { fork } from 'redux-saga/effects'
 import { request } from '../src'
 import { handleEmit } from '../src/emit'
 
-describe('emit', () => {
-  const action = { type: 'TEST', payload: { foo: 'bar' } }
+describe('request', () => {
+  const type = 'SERVER_REQUEST'
+  const successType = 'SERVER_SUCCESS'
+  const failureType = 'SERVER_FAILURE'
+  const action = {
+    type,
+    payload: {
+      successType,
+      failureType,
+    },
+  }
   const event = 'dispatch'
   const socket = {
     emit() {},
