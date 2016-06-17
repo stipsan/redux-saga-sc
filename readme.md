@@ -51,6 +51,10 @@ socket.on('dispatch', (action, cb) => {
 ```
 What's cb doing? It's [sending back](http://socketcluster.io/#!/docs/handling-failure) a message to the `socket` on the server letting it know the action was received successfully.
 
+### Advanced two-way actions using `request`
+
+Two-way ajax. This effect will dispatch an action on the receiver and will expect the receiver to emit an action later with either the successType or failureType found in the request payload.
+
 ## Using Channels
 
 ### Using the `createEventChannel` factory to connect to socket events
