@@ -1,5 +1,10 @@
 {
-  "extends": "../.eslintrc",
+  "extends": "airbnb-base",
+  "parser": "babel-eslint",
+  "rules": {
+    "semi": ["error", "never"],
+    "import/no-unresolved": ["off"]
+  },
   "env": {
     "mocha": true
   }
