@@ -37,5 +37,13 @@ describe('handleEmit', () => {
 
   it('should rethrow error if it\'s not an SocketCluster TimeoutError')
 
-  it('should return and end the loop if no error is thrown')
+  it('should return and end the loop if no error is thrown', () => {
+    const successfulIterator = handleEmit(socket, action, event)
+    successfulIterator.next()
+    expect(
+      successfulIterator.next().done
+    ).toBe(
+      true
+    )
+  })
 })
