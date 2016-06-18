@@ -1,5 +1,5 @@
 import { delay } from 'redux-saga'
-import { call, put, race, take } from 'redux-saga/effects'
+import { call, race, take } from 'redux-saga/effects'
 
 import { callEmit } from './emit'
 

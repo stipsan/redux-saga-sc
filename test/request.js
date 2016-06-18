@@ -1,6 +1,6 @@
 import expect from 'expect'
 import { delay } from 'redux-saga'
-import { call, put, race, take } from 'redux-saga/effects'
+import { call, race, take } from 'redux-saga/effects'
 
 import { request } from '../src'
 import { callEmit } from '../src/emit'
