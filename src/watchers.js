@@ -13,14 +13,14 @@ export function *watchRemote(socket, event = 'dispatch') {
   }
 }
 
-export function *watchRequests(socket, concurrency = 3, retries = 5) {
+export function *watchRequests(socket, workers = 3, retries = 5) {
   const chan = yield call(channel)
 
-  for (let i = 0; i < concurrency; i++) {
+  for (let i = 0; i < workers; i++) {
     yield fork(processRequest, socket, chan, retries)
   }
 
-  while (true) {
+  while (true) { // eslint-disable-line
     const payload = yield take(REQUEST)
     yield put(chan, payload)
   }
