@@ -56,7 +56,7 @@ describe('request', () => {
     }).toThrow(/request timed out/)
   })
 
-  it('should put the server response if it wins the race', () => {
+  it('should return the server response if it wins the race', () => {
     const successAction = {
       type: successType,
       payload: {},
@@ -64,7 +64,7 @@ describe('request', () => {
     expect(
       iterator.next({ response: successAction }).value
     ).toEqual(
-      put(successAction)
+      successAction
     )
   })
 })

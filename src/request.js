@@ -17,5 +17,5 @@ export function *request(socket, action, event, timeRemaining = socket.ackTimeou
     response: take([successType, failureType]),
     timeout: call(deadline, timeRemaining),
   })
-  yield put(response)
+  return response
 }
