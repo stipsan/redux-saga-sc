@@ -1,7 +1,7 @@
 /* eslint consistent-return: "off" */
 
 import { delay } from 'redux-saga'
-import { call } from 'redux-saga/effects'
+import { call, put, take } from 'redux-saga/effects'
 
 import { emit } from './emit'
 import { request } from './request'
@@ -39,6 +39,20 @@ export function *handleRequest(socket, action, event = 'dispatch', retries = 5) 
           payload: { error },
         }
       }
+    }
+  }
+}
+
+export function *processRequest(socket, chan, retries = 5) {
+  while(true) { // eslint-disable-line
+    const { event, payload: requestAction } = yield take(chan)
+    const { failureType } = requestAction.payload
+    yield put(requestAction)
+    console.log('failureType is ', failureType)
+    try {
+      yield call(handleRequest, socket, payload, event, retries)
+    } catch (err) {
+      yield put({ type: failureType, payload: { error: err } })
     }
   }
 }
