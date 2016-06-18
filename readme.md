@@ -30,7 +30,7 @@ import { emit } from 'redux-saga-sc'
 export function *watchSocketEmit() {
   while(true) {
     const action = yield take(SOCKET_EMIT)
-    yield call(emit, socket, action, 'dispatch')
+    yield fork(emit, socket, action, 'dispatch')
   }
 }
 ```
