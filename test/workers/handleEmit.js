@@ -34,4 +34,8 @@ describe('handleEmit', () => {
       iterator.throw('error')
     }).toThrow(/emit failed 2 times/)
   })
+
+  it('should rethrow error if it\'s not an SocketCluster TimeoutError')
+
+  it('should return and end the loop if no error is thrown')
 })
