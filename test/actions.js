@@ -15,6 +15,7 @@ describe('Action Creators', () => {
       actions.socketRequest(action)
     ).toEqual({
       type: actions.REQUEST,
+      event: 'dispatch',
       payload: action,
     })
   })

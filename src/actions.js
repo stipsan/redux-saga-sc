@@ -6,7 +6,8 @@ export const socketEmit = () => {
 
 }
 
-export const socketRequest = action => ({
+export const socketRequest = (payload, event = 'dispatch') => ({
   type: REQUEST,
-  payload: action,
+  event,
+  payload,
 })
