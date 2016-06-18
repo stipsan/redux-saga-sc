@@ -37,4 +37,6 @@ describe('createEventChannel', () => {
     expect(actual).toContain(action)
     expect(spy).toHaveBeenCalled()
   })
+
+  it('should buffer messages on the eventChannel')
 })
