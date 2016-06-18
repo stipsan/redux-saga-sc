@@ -1,7 +1,7 @@
 import { delay } from 'redux-saga'
 import { call, put, race, take } from 'redux-saga/effects'
 
-import { handleEmit } from './emit'
+import { callEmit } from './emit'
 
 export function *deadline(timeRemaining) {
   yield call(delay, timeRemaining)
@@ -11,7 +11,7 @@ export function *deadline(timeRemaining) {
 }
 
 export function *request(socket, action, event, timeRemaining = socket.ackTimeout) {
-  yield call(handleEmit, socket, action, event)
+  yield call(callEmit, socket, action, event)
   const { payload: { successType, failureType } } = action
   const { response } = yield race({
     response: take([successType, failureType]),
