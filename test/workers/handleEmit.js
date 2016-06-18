@@ -3,7 +3,7 @@ import { delay } from 'redux-saga'
 import { call } from 'redux-saga/effects'
 
 import { handleEmit } from '../../src'
-import { callEmit } from '../../src/emit'
+import { emit } from '../../src/emit'
 
 describe('handleEmit', () => {
   const action = { type: 'TEST', payload: { foo: 'bar' } }
@@ -16,7 +16,7 @@ describe('handleEmit', () => {
     expect(
       iterator.next().value
     ).toEqual(
-      call(callEmit, socket, action, event)
+      call(emit, socket, action, event)
     )
   })
 

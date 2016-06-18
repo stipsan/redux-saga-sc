@@ -1,13 +1,14 @@
 import { delay } from 'redux-saga'
 import { call } from 'redux-saga/effects'
 
-import { callEmit } from './emit'
+import { emit } from './emit'
+import { request } from './request'
 
 export function *handleEmit(socket, action, event = 'dispatch', retries = 5) {
   let i = 0
   for (i; i <= retries; i++) {
     try {
-      return yield call(callEmit, socket, action, event)
+      return yield call(emit, socket, action, event)
     } catch (err) {
       if (i < retries) {
         yield call(delay, 2000)

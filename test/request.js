@@ -3,7 +3,7 @@ import { delay } from 'redux-saga'
 import { call, race, take } from 'redux-saga/effects'
 
 import { request } from '../src'
-import { callEmit } from '../src/emit'
+import { emit } from '../src/emit'
 import { deadline } from '../src/request'
 
 describe('request', () => {
@@ -24,11 +24,11 @@ describe('request', () => {
   }
   const iterator = request(socket, action, event)
 
-  it('should call callEmit directly so it waits until receiver report action received', () => {
+  it('should call emit directly so it waits until receiver report action received', () => {
     expect(
       iterator.next().value
     ).toEqual(
-      call(callEmit, socket, action, event)
+      call(emit, socket, action, event)
     )
   })
 
