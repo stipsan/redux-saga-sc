@@ -1,8 +1,11 @@
+import { take, put, call } from 'redux-saga/effects'
 
-export function *watchEmits() {
+import { createEventChannel } from '../src'
 
-}
-
-export function * watchRequests() {
-
+export function *watchRemote(socket, event = 'dispatch') {
+  const chan = yield call(createEventChannel, socket, event)
+  while (true) { // eslint-disable-line
+    const action = yield take(chan)
+    yield put(action)
+  }
 }
