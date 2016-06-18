@@ -48,9 +48,8 @@ export function *processRequest(socket, chan, retries = 5) {
     const { event, payload: requestAction } = yield take(chan)
     const { failureType } = requestAction.payload
     yield put(requestAction)
-    console.log('failureType is ', failureType)
     try {
-      yield call(handleRequest, socket, payload, event, retries)
+      yield call(handleRequest, socket, requestAction, event, retries)
     } catch (err) {
       yield put({ type: failureType, payload: { error: err } })
     }

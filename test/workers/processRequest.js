@@ -42,21 +42,15 @@ describe('processRequest', () => {
     )
   })
   it('should swallow any errors and put them as failureType', () => {
-    iterator.next(action).value
-    // iterator.next()
-    // iterator.next(action)
-    try {
-      iterator.throw('error')
-    } catch (err) {
-
-    }
-    // expect(() => {
-    //   iterator.throw('error')
-    // }).toNotThrow()
     expect(
-      iterator.next(action).value
+      iterator.throw('error').value
     ).toEqual(
-      {}
+      put({
+        type: 'SERVER_FAILURE',
+        payload: {
+          error: 'error',
+        },
+      })
     )
   })
 })
