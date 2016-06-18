@@ -1,5 +1,5 @@
 describe('watchEmits', () => {
-  it('should create a channel for emit actions')
+  it('should create an action channel for emit actions')
   it('should take from the channel')
 
   it('should dispatch a blocking call')
