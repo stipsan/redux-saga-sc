@@ -1,6 +1,6 @@
 import { take, put, call } from 'redux-saga/effects'
 
-import { createEventChannel } from '../src'
+import { createEventChannel } from './eventChannel'
 
 export function *watchRemote(socket, event = 'dispatch') {
   const chan = yield call(createEventChannel, socket, event)
