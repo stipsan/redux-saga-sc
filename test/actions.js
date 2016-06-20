@@ -3,6 +3,21 @@ import * as actions from '../src/actions'
 import expect from 'expect'
 
 describe('Action Creators', () => {
+  it('should let you create a socket emit action', () => {
+    const action = {
+      type: 'RECEIVE_LIKES',
+      payload: {
+        likes: [1, 2, 3],
+      },
+    }
+    expect(
+      actions.socketEmit(action)
+    ).toEqual({
+      type: actions.EMIT,
+      event: 'dispatch',
+      payload: action,
+    })
+  })
   it('should let you create a socket request action', () => {
     const action = {
       type: 'SERVER_REQUEST',
