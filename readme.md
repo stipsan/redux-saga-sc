@@ -86,8 +86,7 @@ export const run = worker => {
 import * as reducers from '../reducers'
 
 import createSagaMiddleware from 'redux-saga'
-import { createStore, applyMiddleware } from 'redux'
-import { combineReducers } from 'redux-immutable'
+import { createStore, applyMiddleware, combineReducers } from 'redux'
 
 import sagas from '../sagas'
 
