@@ -153,13 +153,40 @@ export const signInWithEmailAndPassword = credentials => socketRequest({
   },
 })
 ```
-The watcher for this one is called `watchRequests` and you set it up just like
+You setup the receiver just like you do in the `socketEmit` example, using `watchRemote`.
+There are two important differences though. First of all, unlike `socketEmit`, the action you pass in `socketRequest` will also dispatch locally. This is to allow for stuff like creating progress spinners and similar.
+The other difference is that you need to setup your own watcher that will act on the `AUTHENTICATE_REQUESTED` in this example, and return either `AUTHENTICATE_SUCCESS` or `AUTHENTICATE_FAILURE`.
 
+Here's what it should look like:
+`./web/sagas/auth.js`
+```js
+import { socketEmit } from 'redux-saga-sc'
 
+import { authenticate } from '../models/user'
+import {
+  AUTHENTICATE_REQUESTED
+} from '../constants/ActionTypes'
+
+export function *watchAuthenticateRequest(socket) {
+  while (true) { // eslint-disable-line no-constant-condition
+    const { payload: {
+      successType,
+      failureType,
+      credentials,
+    } } = yield take(AUTHENTICATE_REQUESTED)
+    try {
+      const authToken = yield call(authenticate, credentials)
+      yield put(socketEmit({ type: successType, payload: authToken }))
+    } catch(err) {
+      yield put(socketEmit({ type: failureType, payload: err }))
+    }
+  }
+}
+```
 
 ## Advanced
 
-## Dispatch actions remotely
+A little more info on lower level stuff if you need to do more than what the provided watchers and action creators provides out of the box.
 
 ### Simple one-way actions using `emit`
 
@@ -195,10 +222,6 @@ socket.on('dispatch', (action, cb) => {
 ```
 What's cb doing? It's [sending back](http://socketcluster.io/#!/docs/handling-failure) a message to the `socket` on the server letting it know the action was received successfully.
 
-### Advanced two-way actions using `request`
-
-Two-way ajax. This effect will dispatch an action on the receiver and will expect the receiver to emit an action later with either the successType or failureType found in the request payload.
-
 ## Using Channels
 
 ### Using the `createEventChannel` factory to connect to socket events
@@ -230,9 +253,5 @@ socket.emit('dispatch', {type: 'MY_ACTION', payload: { foo: 'bar' }}, () => {
 ```
 
 # Roadmap
-
-### `actionChannel` that emit socket events, with automatic retry on failures
-
-### worker that can load balance `actionChannel` tasks, allowing socket emits to work in parallel
 
 ### effects for easy usage of [socket channel subscriptions](http://socketcluster.io/#!/docs/api-scchannel-client)
