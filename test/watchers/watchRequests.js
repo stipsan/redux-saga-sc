@@ -1,8 +1,8 @@
 import expect from 'expect'
 import { channel } from 'redux-saga'
-import { call, fork } from 'redux-saga/effects'
+import { call, fork, put, take } from 'redux-saga/effects'
 
-import { watchRequests } from '../../src'
+import { REQUEST, watchRequests } from '../../src'
 import { processRequest } from '../../src/workers'
 
 describe('watchRequests', () => {
@@ -26,6 +26,26 @@ describe('watchRequests', () => {
     ).toEqual(
       fork(processRequest, socket, chan, retries)
     )
+    expect(
+      iterator.next(chan).value
+    ).toEqual(
+      fork(processRequest, socket, chan, retries)
+    )
   })
-  it('should take requests and put them on the channel')
+  it('should take requests and put them on the channel', () => {
+    const payload = {
+      type: 'REQUEST',
+      payload: { successType: 'SUCCESS', failureType: 'FAILURE' },
+    }
+    expect(
+      iterator.next().value
+    ).toEqual(
+      take(REQUEST)
+    )
+    expect(
+      iterator.next(payload).value
+    ).toEqual(
+      put(chan, payload)
+    )
+  })
 })
