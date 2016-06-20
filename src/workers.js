@@ -33,11 +33,7 @@ export function *handleRequest(socket, action, event = 'dispatch', retries = 5) 
       } else {
         const error = new Error(`Socket request failed ${i} times. Giving up.`)
         error.name = 'SocketRequestError'
-        const { payload: { failureType } } = action
-        return {
-          type: failureType,
-          payload: { error },
-        }
+        throw error
       }
     }
   }

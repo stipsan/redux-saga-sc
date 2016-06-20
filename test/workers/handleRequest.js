@@ -36,11 +36,9 @@ describe('handleRequest', () => {
   })
   it('should return failureType with SocketRequestError if too many attempts', () => {
     iterator.next()
-    expect(
-      iterator.throw('error').value
-    ).toContain({
-      type: failureType,
-    })
+    expect(() => {
+      iterator.throw('error')
+    }).toThrow(/Giving up/)
   })
   it('should rethrow error if it\'s not an SocketTimeoutError')
   it('should return and end the loop if no error is thrown', () => {
