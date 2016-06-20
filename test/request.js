@@ -4,7 +4,6 @@ import { call, race, take } from 'redux-saga/effects'
 
 import { request } from '../src'
 import { emit } from '../src/emit'
-import { deadline } from '../src/request'
 
 describe('request', () => {
   const type = 'SERVER_REQUEST'
@@ -38,21 +37,18 @@ describe('request', () => {
     ).toEqual(
       race({
         response: take([successType, failureType]),
-        timeout: call(deadline, socket.ackTimeout),
+        timeout: call(delay, socket.ackTimeout / 10),
       })
     )
   })
 
   it('should throw a SocketTimeoutError if response fails to meet the deadline', () => {
-    const requestDeadline = deadline(socket.ackTimeout)
-    expect(
-      requestDeadline.next().value
-    ).toEqual(
-      call(delay, socket.ackTimeout)
-    )
+    const requestDeadline = request(socket, action, event)
+    requestDeadline.next()
+    requestDeadline.next()
 
     expect(() => {
-      requestDeadline.next()
+      requestDeadline.next({ timeout: true })
     }).toThrow(/request timed out/)
   })
 
