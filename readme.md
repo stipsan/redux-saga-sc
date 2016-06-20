@@ -15,6 +15,150 @@ Or to sync a shared redux state across multiple nodes or clients.
 
 # Documentation
 
+## Basic usage
+
+The provided action creators and saga watchers give you everything you need to send and listen to incoming redux actions.
+
+### Sending actions to remote redux stores
+
+You'll notice that this guide does not use the terms "server" and "client". Why? You could use this server to server, client to client, it doesn't matter. Instead you have a "sender" and a "receiver".
+The "sender" can `emit` something, the "receiver" listens for the `emit` and may decide to `emit` something back in response.
+The "sender" can also `request` something from the "receiver" requiring a response of either `successType` or `failureType`.
+
+#### Sending notifications with `socketEmit` action creator
+
+You can use `socketEmit` to dispatch simple actions that does not require a response. If there's a network problem, like if the device switch between a 3G to 4G connection, it'll automatically retry sending the `emit` until it gets a delivery notification back from the receiver.
+
+To use it, wrap your action that you want dispatched on the remote redux store like this:
+
+`./actions/chat.js`
+```js
+import { socketEmit } from 'redux-saga-sc'
+
+import {
+  RECEIVE_MESSAGE,
+} from '../constants/ActionTypes'
+
+export const sendMessage = (message, sender) => socketEmit({
+  type: RECEIVE_MESSAGE,
+  payload: {
+    message,
+    sender,
+  },
+})
+```
+
+Next step is to setup the watcher that will take actions created by `socketEmit` and send it over the websocket for us.
+
+`./sagas/index.js`
+```js
+import { watchRequests } from 'redux-saga-sc'
+
+import socketCluster from 'socketcluster-client'
+
+const socket = socketCluster.connect()
+
+export default function *sagas() {
+  yield [
+    ... // your other sagas
+    watchEmits(socket),
+  ]
+}
+```
+
+And the last step is to add the `watchRemote` worker to the receiver, in this example the receiver is a SocketCluster workerController:
+`./web/worker.js`
+```js
+import express from 'express'
+
+import createStore from './store'
+
+export const run = worker => {
+  const app = express()
+
+  worker.httpServer.on('request', app)
+
+  worker.scServer.on('connection', socket => createStore(socket))
+}
+```
+`./web/store.js`
+```js
+import * as reducers from '../reducers'
+
+import createSagaMiddleware from 'redux-saga'
+import { createStore, applyMiddleware } from 'redux'
+import { combineReducers } from 'redux-immutable'
+
+import sagas from '../sagas'
+
+export default (socket) => {
+  const sagaMiddleware = createSagaMiddleware()
+  const store = createStore(
+    combineReducers(reducers),
+    applyMiddleware(sagaMiddleware)
+  )
+
+  sagaMiddleware.run(sagas, socket)
+
+  return store
+}
+```
+`./web/sagas/index.js`
+```js
+import { watchRemote } from 'redux-saga-sc'
+
+export default function *sagas(socket) {
+  yield [
+    ... // your other sagas
+    watchRemote(socket)
+  ]
+}
+```
+
+You can setup this on both sides of the websocket if you need the ability to pass actions back and forth.
+Actions will dispatch like any other action.
+Meaning you can use
+```js
+yield take(RECEIVE_MESSAGE)
+```
+in the sagas of your receiver to act on it. And you can also use `RECEIVE_MESSAGE` in your reducers.
+The actions you dispatch wrapped in `socketEmit` only dispatch on the receiver, not the local redux store.
+It will automatically retry if the server does not respond.
+
+By default emits will be done on the "dispatch" event on SocketCluster. You can change this by passing a second argument to socketEmit and use whatever event you want.
+Just be sure to set the `watchRemote` saga on the receiver to the same event, as that too use 'dispatch' as the default event.
+
+#### Requesting data with `socketRequest`
+
+While `socketEmit` is useful for notifications and other stuff that you don't need to know the result, only that it was delivered, there's `socketRequest` that is suitable for more advanced situations.
+When you do a `socketRequest` you have to pass both a `successType` and `failureType` that the receiver must emit back in a given timeframe.
+
+Here's an example:
+`./actions/auth.js`
+```js
+import { socketRequest } from 'redux-saga-sc'
+
+import {
+  AUTHENTICATE_REQUESTED,
+  AUTHENTICATE_SUCCESS,
+  AUTHENTICATE_FAILURE,
+} from '../constants/ActionTypes'
+
+export const signInWithEmailAndPassword = credentials => socketRequest({
+  type: AUTHENTICATE_REQUESTED,
+  payload: {
+    successType: AUTHENTICATE_SUCCESS,
+    failureType: AUTHENTICATE_FAILURE,
+    credentials,
+  },
+})
+```
+The watcher for this one is called `watchRequests` and you set it up just like
+
+
+
+## Advanced
+
 ## Dispatch actions remotely
 
 ### Simple one-way actions using `emit`
