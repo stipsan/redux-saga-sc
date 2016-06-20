@@ -153,6 +153,9 @@ export const signInWithEmailAndPassword = credentials => socketRequest({
   },
 })
 ```
+
+To dispatch socket requests, setup `watchRequests` the same way you did `watchEmits`.
+
 You setup the receiver just like you do in the `socketEmit` example, using `watchRemote`.
 There are two important differences though. First of all, unlike `socketEmit`, the action you pass in `socketRequest` will also dispatch locally. This is to allow for stuff like creating progress spinners and similar.
 The other difference is that you need to setup your own watcher that will act on the `AUTHENTICATE_REQUESTED` in this example, and return either `AUTHENTICATE_SUCCESS` or `AUTHENTICATE_FAILURE`.
