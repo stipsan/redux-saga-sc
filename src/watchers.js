@@ -9,7 +9,7 @@ export function *watchEmits(socket, retries = 5) {
   const emitChan = yield actionChannel(EMIT)
   while (true) { // eslint-disable-line
     const { event, payload } = yield take(emitChan)
-    yield call(handleEmit, socket, event, payload, retries)
+    yield call(handleEmit, socket, payload, event, retries)
   }
 }
 
