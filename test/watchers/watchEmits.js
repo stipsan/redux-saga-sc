@@ -32,7 +32,7 @@ describe('watchEmits', () => {
     expect(
       iterator.next(socketEmit(action)).value
     ).toEqual(
-      call(handleEmit, socket, 'dispatch', action, 5)
+      call(handleEmit, socket, action, 'dispatch', 5)
     )
   })
   // doing it in a blocking way helps queue up the buffer if the network goes down
