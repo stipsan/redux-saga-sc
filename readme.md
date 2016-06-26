@@ -254,6 +254,35 @@ socket.emit('dispatch', {type: 'MY_ACTION', payload: { foo: 'bar' }}, () => {
 })
 ```
 
-# Roadmap
+### Using the `createChannelSubscription` factory to connect to socket channels
 
-### effects for easy usage of [socket channel subscriptions](http://socketcluster.io/#!/docs/api-scchannel-client)
+One of the coolest features of SocketCluster are [channels](http://socketcluster.io/#!/docs/api-scchannel-client).
+Especially when you use channels on the [Exchange](http://socketcluster.io/#!/docs/api-exchange) as it allows you to distribute actions both vertically (multiple worker processes) and horizontally (multiple servers).
+
+Since publishing to a channel is very straightforward there's no utility in `redux-saga-sc` for that, the example below shows you how it's done (`exchange` in these examples are assumed to be `scWorker.exchange` passed to the store from your workerController, that's how it's done in [redux-saga-sc-demo](https://github.com/stipsan/redux-saga-sc-demo)):
+
+```js
+import { cps, take } from 'redux-saga/effects'
+
+export function *watchMessages(exchange) {
+  while (true) { // eslint-disable-line no-constant-condition
+    const message = yield take('MESSAGE')
+    yield cps([exchange, exchange.publish], 'chat', message)
+  }
+}
+```
+
+And here's how createChannelSubscription is implemented to dispatch actions from the channel:
+```js
+import { call, take, put } from 'redux-saga/effects'
+import { socketEmit, createChannelSubscription } from 'redux-saga-sc'
+
+export function *watchExchange(socket, exchange) {
+  const chan = yield call(createChannelSubscription, exchange, 'chat')
+
+  while (true) { // eslint-disable-line no-constant-condition
+    const action = yield take(chan)
+    yield put(socketEmit(action))
+  }
+}
+```
