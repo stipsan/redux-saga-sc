@@ -15,6 +15,16 @@ Or to sync a shared redux state across multiple nodes or clients.
 
 # Documentation
 
+* [Basic usage](#basic-usage)
+  * [Sending actions to remote redux stores](#sending-actions-to-remote-redux-stores)
+    * [Sending notifications with `socketEmit` action creator](#sending-notifications-with-socketemit-action-creator)
+    * [Requesting data with `socketRequest`](#requesting-data-with-socketrequest)
+* [Advanced](#advanced)
+  * [Simple one-way actions using `emit`](#simple-one-way-actions-using-emit)
+* [Using Channels](#using-channels)
+  * [Using the `createEventChannel` factory to connect to socket events](#using-the-createeventchannel-factory-to-connect-to-socket-events)
+  * [Using the `createChannelSubscription` factory to connect to socket channels](#using-the-createchannelsubscription-factory-to-connect-to-socket-channels)
+
 ## Basic usage
 
 The provided action creators and saga watchers give you everything you need to send and listen to incoming redux actions.
