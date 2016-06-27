@@ -1,6 +1,6 @@
 {
   "name": "redux-saga-sc",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Provides sagas to easily dispatch redux actions over SocketCluster websockets",
   "main": "./lib",
   "scripts": {
