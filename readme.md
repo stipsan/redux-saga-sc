@@ -13,6 +13,10 @@ This package provides ready to use sagas to connect SocketCluster clients.
 It can be used to let your server dispatch redux actions on the client and vice verca.
 Or to sync a shared redux state across multiple nodes or clients.
 
+# Examples
+* [redux-saga-sc-demo](https://github.com/stipsan/redux-saga-sc-demo) - A demo chat app showing redux-saga-sc in action
+* [epic](https://github.com/stipsan/epic) - React example project, that takes you from fun development to high quality production
+
 # Documentation
 
 * [Basic usage](#basic-usage)
