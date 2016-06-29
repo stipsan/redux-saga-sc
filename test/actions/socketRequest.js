@@ -1,9 +1,9 @@
-import * as actions from '../src/actions'
+import * as actions from '../../src/actions'
 
 import expect from 'expect'
 
 describe('Action Creators', () => {
-  it('should let you create a socket emit action', () => {
+  it('should create a socketEmit action with required arguments', () => {
     const action = {
       type: 'RECEIVE_LIKES',
       payload: {

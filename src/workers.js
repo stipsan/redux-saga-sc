@@ -5,15 +5,17 @@ import { call, cps, put, race, take } from 'redux-saga/effects'
 
 export function *handleEmit(socket, {
   event,
-  autoReconnectOptions: { initialDelay, randomness, multiplier, maxDelay },
+  autoReconnectOptions = socket.autoReconnectOptions,
   payload,
 }) {
+  const { initialDelay, randomness, multiplier, maxDelay } = autoReconnectOptions
   let timeout
   let exponent = 0
   while (true) { // eslint-disable-line no-constant-condition
     try {
       return yield cps([socket, socket.emit], event, payload)
     } catch (err) {
+      // @FIXME implement a rethrow if not TimeoutError instead of logging
       if ('console' in global) {
         console.error('catched error during handleEmit', err)
       }
@@ -26,6 +28,7 @@ export function *handleEmit(socket, {
         timeout = maxDelay
       }
 
+      // @TODO turn into a yield put(sym('SOCKET_TIMEOUT'))
       if (process.env.NODE_ENV !== 'production') {
         console.error(`Socket emit attempt #${exponent} failed, will retry in ${timeout}ms`)
       }

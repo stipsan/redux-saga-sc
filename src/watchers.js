@@ -1,4 +1,4 @@
-import { takeEvery, delay } from 'redux-saga'
+import { delay, takeEvery } from 'redux-saga'
 import { call, put, take } from 'redux-saga/effects'
 
 import { EMIT, REQUEST } from './actions'
