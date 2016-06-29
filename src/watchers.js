@@ -1,4 +1,4 @@
-import { channel } from 'redux-saga'
+import { channel, buffers } from 'redux-saga'
 import { actionChannel, call, fork, put, take } from 'redux-saga/effects'
 
 import { EMIT, REQUEST } from './actions'
@@ -21,15 +21,11 @@ export function *watchRemote(socket, event = 'dispatch') {
   }
 }
 
-export function *watchRequests(socket, workers = 3, retries = 5) {
-  const chan = yield call(channel)
-
-  for (let i = 0; i < workers; i++) {
-    yield fork(processRequest, socket, chan, retries)
-  }
+export function *watchRequests(socket, retries = 5) {
+  const requestChan = yield actionChannel(REQUEST)
 
   while (true) { // eslint-disable-line
-    const payload = yield take(REQUEST)
-    yield put(chan, payload)
+    const payload = yield take(requestChan)
+    yield call(processRequest, socket, payload, retries)
   }
 }

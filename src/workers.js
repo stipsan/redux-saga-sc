@@ -39,15 +39,12 @@ export function *handleRequest(socket, action, event = 'dispatch', retries = 5) 
   }
 }
 
-export function *processRequest(socket, chan, retries = 5) {
-  while(true) { // eslint-disable-line
-    const { event, payload: requestAction } = yield take(chan)
-    const { failureType } = requestAction.payload
-    yield put(requestAction)
-    try {
-      yield call(handleRequest, socket, requestAction, event, retries)
-    } catch (err) {
-      yield put({ type: failureType, payload: { error: err } })
-    }
+export function *processRequest(socket, { event, payload: requestAction }, retries = 5) {
+  const { failureType } = requestAction.payload
+  yield put(requestAction)
+  try {
+    yield call(request, socket, requestAction, event, retries)
+  } catch (err) {
+    yield put({ type: failureType, payload: { error: err } })
   }
 }
