@@ -1,33 +1,59 @@
 /* eslint consistent-return: "off" */
 
 import { delay } from 'redux-saga'
-import { call, put, take } from 'redux-saga/effects'
+import { call, cps, put, race, take } from 'redux-saga/effects'
 
-import { emit } from './emit'
-import { request } from './request'
-
-export function *handleEmit(socket, retries = 5, { event, payload }) {
-  let i = 0
-  for (i; i <= retries; i++) {
+export function *handleEmit(socket, {
+  event,
+  autoReconnectOptions: { initialDelay, randomness, multiplier, maxDelay },
+  payload,
+}) {
+  let timeout
+  let exponent = 0
+  while (true) { // eslint-disable-line no-constant-condition
     try {
-      return yield call(emit, socket, payload, event)
+      return yield cps([socket, socket.emit], event, payload)
     } catch (err) {
-      if (i < retries) {
-        yield call(delay, 2000)
+      if ('console' in global) {
+        console.error('catched error during handleEmit', err)
       }
+
+      const initialTimeout = Math.round(initialDelay + (randomness || 0) * Math.random())
+
+      timeout = Math.round(initialTimeout * Math.pow(multiplier, ++exponent))
+
+      if (timeout > maxDelay) {
+        timeout = maxDelay
+      }
+
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(`Socket emit attempt #${exponent} failed, will retry in ${timeout}ms`)
+      }
+
+      yield call(delay, timeout)
     }
   }
-  const error = new Error(`Socket emit failed ${i} times. Giving up.`)
-  error.name = 'SocketEmitError'
-  throw error
 }
 
-export function *handleRequest(socket, retries, timeRemaining, { event, payload: requestAction }) {
+export function *handleRequest(socket, {
+  timeout,
+  payload: requestAction,
+}) {
   const { failureType } = requestAction.payload
   yield put(requestAction)
   try {
-    yield call(request, socket, retries, timeRemaining, requestAction, event)
-  } catch (error) {
-    yield put({ type: failureType, payload: { error: err } })
+    yield call(handleEmit, socket, requestAction)
+    const { payload: { successType } } = requestAction
+    const { response } = yield race({
+      response: take([successType, failureType]),
+      timeout: call(delay, timeout),
+    })
+    if (!response) {
+      const error = new Error('Socket request timed out waiting for a response')
+      error.name = 'SocketTimeoutError'
+      throw error
+    }
+  } catch (err) {
+    yield put({ type: failureType, payload: { error: { name: err.name, message: err.message } } })
   }
 }
