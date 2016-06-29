@@ -1,10 +1,10 @@
 import { delay } from 'redux-saga'
 import { call, race, take } from 'redux-saga/effects'
 
-import { emit } from './emit'
+import { handleEmit } from './workers'
 
-export function *request(socket, action, event, timeRemaining = socket.ackTimeout) {
-  yield call(emit, socket, action, event)
+export function *request(socket, action, event) {
+  yield call(handleEmit, socket, action, event)
   const { payload: { successType, failureType } } = action
   const { response } = yield race({
     response: take([successType, failureType]),

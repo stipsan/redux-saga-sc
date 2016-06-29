@@ -6,11 +6,11 @@ import { call, put, take } from 'redux-saga/effects'
 import { emit } from './emit'
 import { request } from './request'
 
-export function *handleEmit(socket, action, event = 'dispatch', retries = 5) {
+export function *handleEmit(socket, retries = 5, { event, payload }) {
   let i = 0
   for (i; i <= retries; i++) {
     try {
-      return yield call(emit, socket, action, event)
+      return yield call(emit, socket, payload, event)
     } catch (err) {
       if (i < retries) {
         yield call(delay, 2000)
@@ -22,29 +22,12 @@ export function *handleEmit(socket, action, event = 'dispatch', retries = 5) {
   throw error
 }
 
-export function *handleRequest(socket, action, event = 'dispatch', retries = 5) {
-  let i = 0
-  for (i; i <= retries; i++) {
-    try {
-      return yield call(request, socket, action, event)
-    } catch (err) {
-      if (i < retries) {
-        yield call(delay, 2000)
-      } else {
-        const error = new Error(`Socket request failed ${i} times. Giving up.`)
-        error.name = 'SocketRequestError'
-        throw error
-      }
-    }
-  }
-}
-
-export function *processRequest(socket, { event, payload: requestAction }, retries = 5) {
+export function *handleRequest(socket, retries, timeRemaining, { event, payload: requestAction }) {
   const { failureType } = requestAction.payload
   yield put(requestAction)
   try {
-    yield call(request, socket, requestAction, event, retries)
-  } catch (err) {
+    yield call(request, socket, retries, timeRemaining, requestAction, event)
+  } catch (error) {
     yield put({ type: failureType, payload: { error: err } })
   }
 }
