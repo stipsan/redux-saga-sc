@@ -3,10 +3,15 @@ import { call, cps, put, race, take } from 'redux-saga/effects'
 
 export function *handleEmit(socket, {
   event,
-  autoReconnectOptions = socket.autoReconnectOptions,
+  autoReconnectOptions = socket.autoReconnectOptions || {},
   payload,
 }) {
-  const { initialDelay, randomness, multiplier, maxDelay } = autoReconnectOptions
+  const {
+    initialDelay = 10000,
+    randomness = 10000,
+    multiplier = 1.5,
+    maxDelay = 60000,
+  } = autoReconnectOptions
   let timeout
   let exponent = 0
   while (true) { // eslint-disable-line no-constant-condition
