@@ -1,5 +1,3 @@
-/* eslint consistent-return: "off" */
-
 import { delay } from 'redux-saga'
 import { call, cps, put, race, take } from 'redux-saga/effects'
 
@@ -39,14 +37,14 @@ export function *handleEmit(socket, {
 }
 
 export function *handleRequest(socket, {
-  timeout,
-  payload: requestAction,
+  timeout = socket.ackTimeout,
+  ...action,
 }) {
-  const { failureType } = requestAction.payload
-  yield put(requestAction)
+  const { payload } = action
+  const { payload: { successType, failureType } } = payload
+  yield put(payload)
   try {
-    yield call(handleEmit, socket, requestAction)
-    const { payload: { successType } } = requestAction
+    yield call(handleEmit, socket, action)
     const { response } = yield race({
       response: take([successType, failureType]),
       timeout: call(delay, timeout),

@@ -16,8 +16,41 @@ describe('socketEmit action creator', () => {
       type: actions.EMIT,
       event: 'dispatch',
       payload: action,
+      autoReconnectOptions: undefined,
     })
   })
-  it('should return `event` with a sensible default that\'s customizable')
-  it('should optionally pass `autoReconnectOptions`')
+  it('can customize the event name on the WebSocket', () => {
+    const action = {
+      type: 'LOOT',
+      payload: {
+        coins: 10,
+      },
+    }
+    expect(
+      actions.socketEmit(action, 'treasurehunt')
+    ).toEqual({
+      type: actions.EMIT,
+      event: 'treasurehunt',
+      payload: action,
+      autoReconnectOptions: undefined,
+    })
+  })
+  it('should optionally pass `autoReconnectOptions`', () => {
+    const action = {
+      type: 'SPAM',
+      payload: {
+        free: 'money',
+      },
+    }
+    expect(
+      actions.socketEmit(action, undefined, { maxDelay: 1000 })
+    ).toEqual({
+      type: actions.EMIT,
+      event: 'dispatch',
+      payload: action,
+      autoReconnectOptions: {
+        maxDelay: 1000,
+      },
+    })
+  })
 })

@@ -1,57 +1,65 @@
 import expect from 'expect'
 import { delay } from 'redux-saga'
-import { call } from 'redux-saga/effects'
+import { call, put, race, take } from 'redux-saga/effects'
 
-import { handleRequest, request } from '../../src'
+import { handleEmit, handleRequest, socketRequest } from '../../src'
 
 describe('handleRequest', () => {
   const type = 'SERVER_REQUEST'
   const successType = 'SERVER_SUCCESS'
   const failureType = 'SERVER_FAILURE'
-  const action = {
+  const socket = {
+    emit() {},
+    ackTimeout: 100,
+  }
+  const action = socketRequest({
     type,
     payload: {
       successType,
       failureType,
     },
-  }
-  const event = 'dispatch'
-  const socket = {
-    emit() {},
-  }
-  const iterator = handleRequest(socket, action, event, 1)
-  it('should yield the request effect', () => {
+  }, undefined, undefined, 100)
+  const { payload } = action
+  const { timeout, ...requestAction } = action
+
+  const iterator = handleRequest(socket, action)
+  it('should put the payload on the store', () => {
     expect(
       iterator.next().value
     ).toEqual(
-      call(request, socket, action, event)
+      put(payload)
     )
   })
-  it('should retry request if it fails deadline', () => {
+  it('should ask handleEmit to send the request payload trough socket', () => {
     expect(
-      iterator.throw('error').value
+      iterator.next().value
     ).toEqual(
-      call(delay, 2000)
+      call(handleEmit, socket, requestAction)
     )
   })
-  it('should return failureType with SocketRequestError if too many attempts', () => {
-    iterator.next()
-    expect(() => {
-      iterator.throw('error')
-    }).toThrow(/Giving up/)
-  })
-  it('should rethrow error if it\'s not an SocketTimeoutError')
-  it('should return and end the loop if no error is thrown', () => {
-    const successfulIterator = handleRequest(socket, action, event)
-    const successAction = {
-      type: successType,
-      payload: {},
-    }
-    successfulIterator.next()
+  it('should start a timeout race', () => {
     expect(
-      successfulIterator.next(successAction).value
+      iterator.next().value
     ).toEqual(
-      successAction
+      race({
+        response: take([successType, failureType]),
+        timeout: call(delay, timeout),
+      })
+    )
+  })
+  it('should put a failureType action on the redux store on timeout', () => {
+    expect(
+      iterator.next({ timeout: true }).value
+    ).toEqual(
+      put({
+        type: failureType,
+        payload: {
+          error: {
+            name: 'SocketTimeoutError',
+            message: 'Socket request timed out waiting for a response',
+          },
+        },
+      })
     )
   })
 })
