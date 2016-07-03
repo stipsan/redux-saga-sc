@@ -19,21 +19,14 @@ Or to sync a shared redux state across multiple nodes or clients.
 
 # Documentation
 
-* [Basic usage](#basic-usage)
-  * [Sending actions to remote redux stores](#sending-actions-to-remote-redux-stores)
-    * [Sending notifications with `socketEmit` action creator](#sending-notifications-with-socketemit-action-creator)
-    * [Requesting data with `socketRequest`](#requesting-data-with-socketrequest)
+* [Sending actions between remote redux stores](#sending-actions-between-remote-redux-stores)
+  * [Sending notifications with `socketEmit` action creator](#sending-notifications-with-socketemit-action-creator)
+  * [Requesting data with `socketRequest`](#requesting-data-with-socketrequest)
 * [Advanced](#advanced)
-  * [Simple one-way actions using `emit`](#simple-one-way-actions-using-emit)
-* [Using Channels](#using-channels)
   * [Using the `createEventChannel` factory to connect to socket events](#using-the-createeventchannel-factory-to-connect-to-socket-events)
   * [Using the `createChannelSubscription` factory to connect to socket channels](#using-the-createchannelsubscription-factory-to-connect-to-socket-channels)
 
-## Basic usage
-
-The provided action creators and saga watchers give you everything you need to send and listen to incoming redux actions.
-
-### Sending actions to remote redux stores
+### Sending actions between remote redux stores
 
 You'll notice that this guide does not use the terms "server" and "client". Why? You could use this server to server, client to client, it doesn't matter. Instead you have a "sender" and a "receiver".
 The "sender" can `emit` something, the "receiver" listens for the `emit` and may decide to `emit` something back in response.
@@ -203,42 +196,6 @@ export function *watchAuthenticateRequest(socket) {
 ## Advanced
 
 A little more info on lower level stuff if you need to do more than what the provided watchers and action creators provides out of the box.
-
-### Simple one-way actions using `emit`
-
-For simpler cases like firing a notification when a friend came online and the like.
-The sender does not need to know how the receiver handle the incoming action, it only need to know the action was delivered successfully.
-
-Below is an example of how you implement `emit` on the sender.
-Note that even though we're using `call`, this isn't blocking. You can emit as many messages as you want and they'll just run in parallel.
-```js
-import { emit } from 'redux-saga-sc'
-
-export function *watchSocketEmit() {
-  while(true) {
-    const action = yield take(SOCKET_EMIT)
-    yield fork(emit, socket, action, 'dispatch')
-  }
-}
-```
-
-Please note that if your receiver is listening to the emit without using `createEventChannel` you have to make sure you call the callback.
-In other words update this:
-```js
-socket.on('dispatch', (action) => {
-  store.dispatch(action)
-})
-```
-to:
-```js
-socket.on('dispatch', (action, cb) => {
-  cb()
-  store.dispatch(action)
-})
-```
-What's cb doing? It's [sending back](http://socketcluster.io/#!/docs/handling-failure) a message to the `socket` on the server letting it know the action was received successfully.
-
-## Using Channels
 
 ### Using the `createEventChannel` factory to connect to socket events
 

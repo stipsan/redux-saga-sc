@@ -1,35 +1,22 @@
-import { channel } from 'redux-saga'
-import { actionChannel, call, fork, put, take } from 'redux-saga/effects'
+import { takeEvery } from 'redux-saga'
+import { call, put, take } from 'redux-saga/effects'
 
 import { EMIT, REQUEST } from './actions'
 import { createEventChannel } from './eventChannel'
-import { processRequest, handleEmit } from './workers'
+import { handleEmit, handleRequest } from './workers'
 
-export function *watchEmits(socket, retries = 5) {
-  const emitChan = yield actionChannel(EMIT)
-  while (true) { // eslint-disable-line
-    const { event, payload } = yield take(emitChan)
-    yield call(handleEmit, socket, payload, event, retries)
-  }
+export function *watchEmits(socket) {
+  yield* takeEvery(EMIT, handleEmit, socket)
+}
+
+export function *watchRequests(socket) {
+  yield* takeEvery(REQUEST, handleRequest, socket)
 }
 
 export function *watchRemote(socket, event = 'dispatch') {
   const chan = yield call(createEventChannel, socket, event)
-  while (true) { // eslint-disable-line
+  while (true) { // eslint-disable-line no-constant-condition
     const action = yield take(chan)
     yield put(action)
-  }
-}
-
-export function *watchRequests(socket, workers = 3, retries = 5) {
-  const chan = yield call(channel)
-
-  for (let i = 0; i < workers; i++) {
-    yield fork(processRequest, socket, chan, retries)
-  }
-
-  while (true) { // eslint-disable-line
-    const payload = yield take(REQUEST)
-    yield put(chan, payload)
   }
 }

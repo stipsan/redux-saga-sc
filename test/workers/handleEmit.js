@@ -1,49 +1,43 @@
 import expect from 'expect'
 import { delay } from 'redux-saga'
-import { call } from 'redux-saga/effects'
+import { call, cps } from 'redux-saga/effects'
 
-import { handleEmit } from '../../src'
-import { emit } from '../../src/emit'
+import { handleEmit, socketEmit } from '../../src'
 
 describe('handleEmit', () => {
   const action = { type: 'TEST', payload: { foo: 'bar' } }
   const event = 'dispatch'
   const socket = {
+    autoReconnectOptions: {
+      initialDelay: 1000, randomness: 1000, multiplier: 1.5, maxDelay: 3000,
+    },
     emit() {},
   }
-  const iterator = handleEmit(socket, action, event, 1)
-  it('should yield the emit effect', () => {
+  const iterator = handleEmit(socket, socketEmit(action))
+  it('should yield a socket.emit cps effect', () => {
     expect(
       iterator.next().value
     ).toEqual(
-      call(emit, socket, action, event)
+      cps([socket, socket.emit], event, action)
     )
   })
 
-  it('should retry emit if an error happened', () => {
+  it('should yield a delay if error happens, not smaller than initialDelay', () => {
     expect(
-      iterator.throw('error').value
-    ).toEqual(
-      call(delay, 2000)
+      iterator.throw('error').value.CALL.args[0]
+    ).toBeGreaterThanOrEqualTo(
+      call(delay, socket.autoReconnectOptions.initialDelay).CALL.args[0]
     )
   })
 
-  it('should throw if retried too many times', () => {
+  it('should yield a delay if error happens, not larger than maxDelay', () => {
     iterator.next()
-    expect(() => {
-      iterator.throw('error')
-    }).toThrow(/emit failed 2 times/)
+    expect(
+      iterator.throw('error').value.CALL.args[0]
+    ).toBeLessThanOrEqualTo(
+      call(delay, socket.autoReconnectOptions.maxDelay).CALL.args[0]
+    )
   })
 
   it('should rethrow error if it\'s not an SocketCluster TimeoutError')
-
-  it('should return and end the loop if no error is thrown', () => {
-    const successfulIterator = handleEmit(socket, action, event)
-    successfulIterator.next()
-    expect(
-      successfulIterator.next().done
-    ).toBe(
-      true
-    )
-  })
 })

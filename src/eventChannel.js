@@ -1,6 +1,6 @@
 import { buffers, eventChannel } from 'redux-saga'
 
-export function createEventChannel(socket, event = 'dispatch') {
+export function createEventChannel(socket, event = 'dispatch', buffer = buffers.fixed()) {
   return eventChannel(listener => {
     const handleEvent = (action, cb) => {
       // notify the sender that the event is received
@@ -11,10 +11,10 @@ export function createEventChannel(socket, event = 'dispatch') {
     }
     socket.on(event, handleEvent)
     return () => socket.off(event, handleEvent)
-  }, buffers.fixed())
+  }, buffer)
 }
 
-export function createChannelSubscription(socketOrExchange, channelName) {
+export function createChannelSubscription(socketOrExchange, channelName, buffer = buffers.fixed()) {
   return eventChannel(listener => {
     const handlePublish = (action, cb) => {
       // notify the sender that the event is received
@@ -27,5 +27,5 @@ export function createChannelSubscription(socketOrExchange, channelName) {
     channel.watch(handlePublish)
 
     return () => channel.unwatch(channelName, handlePublish)
-  }, buffers.fixed())
+  }, buffer)
 }
