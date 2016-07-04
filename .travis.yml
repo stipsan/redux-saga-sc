@@ -1,5 +1,8 @@
 sudo: false
 language: node_js
+dependencies:
+  pre:
+    - npm install -g npm@3
 node_js:
   - "node"
 script: "npm test && npm run lint"
