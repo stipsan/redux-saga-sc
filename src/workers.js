@@ -23,6 +23,13 @@ export function *handleEmit(socket, {
         console.error('catched error during handleEmit', err)
       }
 
+      // prevent memory leaks in socket clients that do not reconnect when connection is lost
+      if (socket.getState() === 'closed' && socket.pendingReconnect !== true) {
+        const error = new Error('Socket got closed before the emit was acknowledged')
+        error.name = 'SocketTimeoutError'
+        throw error
+      }
+
       const initialTimeout = Math.round(initialDelay + (randomness || 0) * Math.random())
 
       timeout = Math.round(initialTimeout * Math.pow(multiplier, ++exponent))
