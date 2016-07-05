@@ -12,6 +12,9 @@ describe('handleEmit', () => {
       initialDelay: 1000, randomness: 1000, multiplier: 1.5, maxDelay: 3000,
     },
     emit() {},
+    getState() {
+      return 'open'
+    },
   }
   const iterator = handleEmit(socket, socketEmit(action))
   it('should yield a socket.emit cps effect', () => {
