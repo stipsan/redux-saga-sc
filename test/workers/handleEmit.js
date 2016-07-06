@@ -42,5 +42,14 @@ describe('handleEmit', () => {
     )
   })
 
+  it('should yield a delay if error happens with maxDelay', () => {
+    iterator.next()
+    expect(
+      iterator.throw('error').value.CALL.args[0]
+    ).toBeLessThanOrEqualTo(
+      call(delay, socket.autoReconnectOptions.maxDelay).CALL.args[0]
+    )
+  })
+
   it('should rethrow error if it\'s not an SocketCluster TimeoutError')
 })
