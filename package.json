@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/stipsan/redux-saga-sc#readme",
   "peerDependencies": {
-    "redux-saga": "0.10.x"
+    "redux-saga": "*"
   },
   "devDependencies": {
     "babel-cli": "6.10.1",
