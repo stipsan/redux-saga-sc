@@ -5,15 +5,15 @@ import { EMIT, REQUEST } from './actions'
 import { createEventChannel } from './eventChannel'
 import { handleEmit, handleRequest } from './workers'
 
-export function *watchEmits(socket) {
+export function* watchEmits(socket) {
   yield* takeEvery(EMIT, handleEmit, socket)
 }
 
-export function *watchRequests(socket) {
+export function* watchRequests(socket) {
   yield* takeEvery(REQUEST, handleRequest, socket)
 }
 
-export function *watchRemote(socket, event = 'dispatch') {
+export function* watchRemote(socket, event = 'dispatch') {
   const chan = yield call(createEventChannel, socket, event)
   while (true) { // eslint-disable-line no-constant-condition
     const action = yield take(chan)

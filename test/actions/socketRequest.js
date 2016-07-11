@@ -1,6 +1,6 @@
-import * as actions from '../../src/actions'
-
 import expect from 'expect'
+
+import { REQUEST, socketRequest } from '../../src/actions'
 
 describe('socketRequest action creator', () => {
   const payload = {
@@ -12,9 +12,9 @@ describe('socketRequest action creator', () => {
   }
   it('should return passed in action as payload', () => {
     expect(
-      actions.socketRequest(payload)
+      socketRequest(payload)
     ).toEqual({
-      type: actions.REQUEST,
+      type: REQUEST,
       event: 'dispatch',
       autoReconnectOptions: undefined,
       timeout: undefined,
@@ -23,9 +23,9 @@ describe('socketRequest action creator', () => {
   })
   it('can customize the event name on the WebSocket', () => {
     expect(
-      actions.socketRequest(payload, 'request')
+      socketRequest(payload, 'request')
     ).toEqual({
-      type: actions.REQUEST,
+      type: REQUEST,
       event: 'request',
       autoReconnectOptions: undefined,
       timeout: undefined,
@@ -34,9 +34,9 @@ describe('socketRequest action creator', () => {
   })
   it('should optionally pass `autoReconnectOptions`', () => {
     expect(
-      actions.socketRequest(payload, undefined, { maxDelay: 1000 })
+      socketRequest(payload, undefined, { maxDelay: 1000 })
     ).toEqual({
-      type: actions.REQUEST,
+      type: REQUEST,
       event: 'dispatch',
       autoReconnectOptions: {
         maxDelay: 1000,
@@ -47,9 +47,9 @@ describe('socketRequest action creator', () => {
   })
   it('should optionally pass a request `timeout`', () => {
     expect(
-      actions.socketRequest(payload, undefined, undefined, 1000)
+      socketRequest(payload, undefined, undefined, 1000)
     ).toEqual({
-      type: actions.REQUEST,
+      type: REQUEST,
       event: 'dispatch',
       autoReconnectOptions: undefined,
       timeout: 1000,

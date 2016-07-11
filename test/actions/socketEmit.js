@@ -1,6 +1,6 @@
-import * as actions from '../../src/actions'
-
 import expect from 'expect'
+
+import { EMIT, socketEmit } from '../../src/actions'
 
 describe('socketEmit action creator', () => {
   it('should return passed in action as payload', () => {
@@ -11,9 +11,9 @@ describe('socketEmit action creator', () => {
       },
     }
     expect(
-      actions.socketEmit(action)
+      socketEmit(action)
     ).toEqual({
-      type: actions.EMIT,
+      type: EMIT,
       event: 'dispatch',
       payload: action,
       autoReconnectOptions: undefined,
@@ -27,9 +27,9 @@ describe('socketEmit action creator', () => {
       },
     }
     expect(
-      actions.socketEmit(action, 'treasurehunt')
+      socketEmit(action, 'treasurehunt')
     ).toEqual({
-      type: actions.EMIT,
+      type: EMIT,
       event: 'treasurehunt',
       payload: action,
       autoReconnectOptions: undefined,
@@ -43,9 +43,9 @@ describe('socketEmit action creator', () => {
       },
     }
     expect(
-      actions.socketEmit(action, undefined, { maxDelay: 1000 })
+      socketEmit(action, undefined, { maxDelay: 1000 })
     ).toEqual({
-      type: actions.EMIT,
+      type: EMIT,
       event: 'dispatch',
       payload: action,
       autoReconnectOptions: {

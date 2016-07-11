@@ -1,7 +1,7 @@
 import { delay } from 'redux-saga'
 import { call, cps, put, race, take } from 'redux-saga/effects'
 
-export function *handleEmit(socket, {
+export function* handleEmit(socket, {
   event,
   autoReconnectOptions = socket.autoReconnectOptions || {},
   payload,
@@ -30,7 +30,7 @@ export function *handleEmit(socket, {
         throw error
       }
 
-      const initialTimeout = Math.round(initialDelay + (randomness || 0) * Math.random())
+      const initialTimeout = Math.round(initialDelay + ((randomness || 0) * Math.random()))
 
       timeout = Math.round(initialTimeout * Math.pow(multiplier, ++exponent))
 
@@ -48,7 +48,7 @@ export function *handleEmit(socket, {
   }
 }
 
-export function *handleRequest(socket, {
+export function* handleRequest(socket, {
   timeout = socket.ackTimeout,
   ...action,
 }) {

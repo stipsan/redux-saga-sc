@@ -3,7 +3,8 @@
   "parser": "babel-eslint",
   "rules": {
     "semi": ["error", "never"],
-    "import/no-unresolved": ["off"]
+    "import/no-unresolved": ["off"],
+    "import/no-extraneous-dependencies": ["off"]
   },
   "env": {
     "mocha": true
