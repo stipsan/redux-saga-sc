@@ -144,6 +144,15 @@ Here's an example:
 ```js
 import { socketRequest } from 'redux-saga-sc'
 
+export const signInWithEmailAndPassword = credentials =>
+  socketRequest('AUTHENTICATE', { credentials })
+```
+
+Or if you want full control over the action constants:
+`./actions/auth.js`
+```js
+import { socketRequest } from 'redux-saga-sc'
+
 import {
   AUTHENTICATE_REQUESTED,
   AUTHENTICATE_SUCCESS,

@@ -56,4 +56,22 @@ describe('socketRequest action creator', () => {
       payload,
     })
   })
+  it('should create payload and type if first argument is a string', () => {
+    expect(
+      socketRequest('FETCH_USERS', { page: 1 })
+    ).toEqual({
+      type: REQUEST,
+      event: 'dispatch',
+      autoReconnectOptions: undefined,
+      timeout: undefined,
+      payload: {
+        type: 'FETCH_USERS_REQUEST',
+        payload: {
+          successType: 'FETCH_USERS_SUCCESS',
+          failureType: 'FETCH_USERS_FAILURE',
+          page: 1,
+        },
+      },
+    })
+  })
 })
