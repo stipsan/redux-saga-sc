@@ -18,7 +18,7 @@ describe('handleRequest', () => {
       successType,
       failureType,
     },
-  }, undefined, undefined, 100)
+  }, { timeout: 100 })
   const { payload } = action
   const { timeout, ...requestAction } = action
 

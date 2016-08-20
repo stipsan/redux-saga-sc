@@ -27,7 +27,7 @@ describe('socketEmit action creator', () => {
       },
     }
     expect(
-      socketEmit(action, 'treasurehunt')
+      socketEmit(action, { event: 'treasurehunt' })
     ).toEqual({
       type: EMIT,
       event: 'treasurehunt',
@@ -43,7 +43,7 @@ describe('socketEmit action creator', () => {
       },
     }
     expect(
-      socketEmit(action, undefined, { maxDelay: 1000 })
+      socketEmit(action, { autoReconnectOptions: { maxDelay: 1000 } })
     ).toEqual({
       type: EMIT,
       event: 'dispatch',

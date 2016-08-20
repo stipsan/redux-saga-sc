@@ -23,7 +23,7 @@ describe('socketRequest action creator', () => {
   })
   it('can customize the event name on the WebSocket', () => {
     expect(
-      socketRequest(payload, 'request')
+      socketRequest(payload, { event: 'request' })
     ).toEqual({
       type: REQUEST,
       event: 'request',
@@ -34,7 +34,7 @@ describe('socketRequest action creator', () => {
   })
   it('should optionally pass `autoReconnectOptions`', () => {
     expect(
-      socketRequest(payload, undefined, { maxDelay: 1000 })
+      socketRequest(payload, { autoReconnectOptions: { maxDelay: 1000 } })
     ).toEqual({
       type: REQUEST,
       event: 'dispatch',
@@ -47,7 +47,7 @@ describe('socketRequest action creator', () => {
   })
   it('should optionally pass a request `timeout`', () => {
     expect(
-      socketRequest(payload, undefined, undefined, 1000)
+      socketRequest(payload, { timeout: 1000 })
     ).toEqual({
       type: REQUEST,
       event: 'dispatch',
@@ -58,7 +58,7 @@ describe('socketRequest action creator', () => {
   })
   it('should create payload and type if first argument is a string', () => {
     expect(
-      socketRequest('FETCH_USERS', { page: 1 })
+      socketRequest('FETCH_USERS', { payload: { page: 1 } })
     ).toEqual({
       type: REQUEST,
       event: 'dispatch',
