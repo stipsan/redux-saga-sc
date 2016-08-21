@@ -26,6 +26,9 @@ export function createChannelSubscription(socketOrExchange, channelName, buffer 
     const channel = socketOrExchange.subscribe(channelName)
     channel.watch(handlePublish)
 
-    return () => channel.unwatch(channelName, handlePublish)
+    return () => {
+      channel.unwatch(handlePublish)
+      // @TODO socketOrExchange.unsubscribe(channelName)
+    }
   }, buffer)
 }
