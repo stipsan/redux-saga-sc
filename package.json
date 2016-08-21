@@ -1,6 +1,6 @@
 {
   "name": "redux-saga-sc",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Provides sagas to easily dispatch redux actions over SocketCluster websockets",
   "main": "./lib",
   "scripts": {
@@ -42,11 +42,11 @@
     "redux-saga": "*"
   },
   "devDependencies": {
-    "babel-cli": "6.10.1",
+    "babel-cli": "6.11.4",
     "babel-eslint": "6.1.2",
     "babel-polyfill": "6.13.0",
     "babel-preset-es2015": "6.13.2",
-    "babel-preset-stage-2": "6.11.0",
+    "babel-preset-stage-2": "6.13.0",
     "babel-register": "6.11.6",
     "codeclimate-test-reporter": "0.3.3",
     "coveralls": "2.11.12",
