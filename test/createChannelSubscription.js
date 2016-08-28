@@ -11,8 +11,10 @@ describe('createChannelSubscription', () => {
         watch(listener) {
           this.listener = listener
         },
-        unwatch() {
-          delete this.listener
+        unwatch(listener) {
+          if (this.listener === listener) {
+            delete this.listener
+          }
         },
       }
       this.channels[channelName] = channel
@@ -44,6 +46,12 @@ describe('createChannelSubscription', () => {
     exchange.publish('public', action, spy)
     expect(actual).toContain(action)
     expect(spy).toHaveBeenCalled()
+  })
+
+  it('should handle chan.close()', () => {
+    expect(exchange.channels.public.listener).toBeTruthy()
+    chan.close()
+    expect(exchange.channels.public.listener).toBeFalsy()
   })
 
   it('should buffer messages on the eventChannel')

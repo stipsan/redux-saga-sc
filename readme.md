@@ -6,7 +6,8 @@ redux-saga-sc
 [![Coverage Status](https://coveralls.io/repos/github/stipsan/redux-saga-sc/badge.svg)](https://coveralls.io/github/stipsan/redux-saga-sc)
 [![npm package](https://img.shields.io/npm/dm/redux-saga-sc.svg)](https://www.npmjs.com/package/redux-saga-sc)
 
-[![NPM](https://nodei.co/npm/redux-saga-sc.png)](https://www.npmjs.com/package/redux-saga-sc)
+[![NPM](https://nodei.co/npm/redux-saga-sc.png?downloadRank=true)](https://www.npmjs.com/package/redux-saga-sc)
+[![NPM](https://nodei.co/npm-dl/redux-saga-sc.png?months=3&height=2)](https://nodei.co/npm/redux-saga-sc/)
 
 
 This package provides ready to use sagas to connect SocketCluster clients.
