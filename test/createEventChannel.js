@@ -20,7 +20,7 @@ describe('createEventChannel', () => {
     const actual = []
     const action = { type: 'TEST', payload: { foo: 'bar' } }
 
-    chan.take((ac) => actual.push(ac))
+    chan.take(ac => actual.push(ac))
     socket.emit('dispatch', action)
     expect(actual).toContain(action)
     socket.emit('dispatch', action)
@@ -32,7 +32,7 @@ describe('createEventChannel', () => {
     const action = { type: 'TEST', payload: { foo: 'bar' } }
     const spy = createSpy()
 
-    chan.take((ac) => actual.push(ac))
+    chan.take(ac => actual.push(ac))
     socket.emit('dispatch', action, spy)
     expect(actual).toContain(action)
     expect(spy).toHaveBeenCalled()

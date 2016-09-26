@@ -30,7 +30,7 @@ describe('createChannelSubscription', () => {
     const actual = []
     const action = { type: 'TEST', payload: { foo: 'bar' } }
 
-    chan.take((ac) => actual.push(ac))
+    chan.take(ac => actual.push(ac))
     exchange.publish('public', action)
     expect(actual).toContain(action)
     exchange.publish('public', action)
@@ -42,7 +42,7 @@ describe('createChannelSubscription', () => {
     const action = { type: 'TEST', payload: { foo: 'bar' } }
     const spy = createSpy()
 
-    chan.take((ac) => actual.push(ac))
+    chan.take(ac => actual.push(ac))
     exchange.publish('public', action, spy)
     expect(actual).toContain(action)
     expect(spy).toHaveBeenCalled()
