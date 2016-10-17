@@ -52,7 +52,7 @@ export function* handleEmit(socket, {
 
 export function* handleRequest(socket, {
   timeout = socket.ackTimeout,
-  ...action,
+  ...action
 }) {
   const { payload } = action
   const { payload: { successType, failureType } } = payload
