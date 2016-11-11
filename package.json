@@ -49,7 +49,7 @@
     "babel-preset-stage-2": "6.18.0",
     "babel-register": "6.18.0",
     "codeclimate-test-reporter": "0.4.0",
-    "coveralls": "2.11.14",
+    "coveralls": "2.11.15",
     "eslint": "3.9.0",
     "eslint-config-airbnb-base": "9.0.0",
     "eslint-config-xo-space": "0.15.0",
