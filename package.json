@@ -59,7 +59,7 @@
     "istanbul": "1.1.0-alpha.1",
     "mkdirp": "0.5.1",
     "mocha": "3.2.0",
-    "redux-saga": "0.14.0",
+    "redux-saga": "0.14.1",
     "rimraf": "2.5.4"
   }
 }
