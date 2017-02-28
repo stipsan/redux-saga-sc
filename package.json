@@ -51,7 +51,7 @@
     "codeclimate-test-reporter": "0.4.1",
     "coveralls": "2.11.16",
     "eslint": "3.16.1",
-    "eslint-config-airbnb-base": "9.0.0",
+    "eslint-config-airbnb-base": "11.1.0",
     "eslint-config-xo-space": "0.15.0",
     "eslint-plugin-import": "2.2.0",
     "expect": "1.20.2",
