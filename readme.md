@@ -1,6 +1,8 @@
 redux-saga-sc
 ===============
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/stipsan/redux-saga-sc.svg)](https://greenkeeper.io/)
+
 [![Travis branch](https://img.shields.io/travis/stipsan/redux-saga-sc.svg)](https://travis-ci.org/stipsan/redux-saga-sc)
 [![Code Climate](https://codeclimate.com/github/stipsan/redux-saga-sc/badges/gpa.svg)](https://codeclimate.com/github/stipsan/redux-saga-sc)
 [![Coverage Status](https://coveralls.io/repos/github/stipsan/redux-saga-sc/badge.svg)](https://coveralls.io/github/stipsan/redux-saga-sc)
